@@ -23,9 +23,12 @@ router.use(function(req, res, next){
 router.get("/", function(req, res, next){
     User.find()
         .sort({ createdAt: "descending"})
-        .exec(function(err, users) {
-            if(err) { return next(err); }
+        .exec()
+        .then(function(users) {
             res.render("index", { users: users });
+        })
+        .catch(function(err){
+            return next(err);
         });
 });
 
@@ -37,19 +40,22 @@ router.post("/signup", function(req, res, next){
     var username = req.body.username;
     var password = req.body.password;
 
-    User.findOne({ username: username }, function(err, user){
-        if (err) { return next(err); }
-        if (user) {
-            req.flash("error", "User already exists");
-            return res.redirect("/signup");
-        }
+    User.findOne({ username: username }).exec()
+        .then(function(user){
+            if (user) {
+                req.flash("error", "User already exists");
+                return res.redirect("/signup");
+            }
 
-        var newUser = new User({
-            username: username,
-            password: password
+            var newUser = new User({
+                username: username,
+                password: password
+            });
+            newUser.save(next);
+        })
+        .catch(function(err){
+            return next(err);
         });
-        newUser.save(next);
-    });
 }, passport.authenticate("login", {
     successRedirect: "/",
     failureRedirect: "/signup",
@@ -57,12 +63,15 @@ router.post("/signup", function(req, res, next){
 }));
 
 router.get("/users/:username", function(req, res, next){
-    User.findOne({ username: req.params.username }, function(err, user){
-        if (err) { return next(err); }
-        if (!user) { return next(404); }
+    User.findOne({ username: req.params.username }).exec()
+        .then(function(err, user){
+            if (!user) { return next(404); }
 
-        res.render("profile", { user: user });
-    })
+            res.render("profile", { user: user });
+        })
+        .catch(function(err){
+            return next(err);
+        });
 });
 
 router.get("/login", function(req, res){
@@ -96,15 +105,16 @@ router.get("/edit", ensureAuthenticated, function(req, res){
 router.post("/edit", ensureAuthenticated, function(req, res, next){
     req.user.displayName = req.body.displayname;
     req.user.bio = req.body.bio;
-    req.user.save(function(err){
-        if(err) {
-            next(err);
-            return;
-        }
-        req.flash("info", "Profile updated!");
-        res.redirect("/edit");
-    })
-})
+    req.user.save()
+        .catch(function(err){
+            if(err) {
+                next(err);
+                return;
+            }
+            req.flash("info", "Profile updated!");
+            res.redirect("/edit");
+        });
+});
 
 //Export router
 module.exports = router;
