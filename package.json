@@ -1,0 +1,32 @@
+{
+  "name": "learn-about-me",
+  "version": "1.0.0",
+  "description": "Learn About Me app - with security precautions",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "hmb",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "csurf": "^1.9.0",
+    "ejs": "^2.5.1",
+    "express": "^4.14.0",
+    "express-session": "^1.14.1",
+    "helmet": "^2.1.2",
+    "mongoose": "^4.5.10",
+    "morgan": "^1.7.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
+  },
+  "repository" :{ 
+    "type" : "git",
+    "url" : "https://github.com/BakerNet/lam-sec.git"
+  }
+}
+
