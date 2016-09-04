@@ -106,13 +106,12 @@ router.post("/edit", ensureAuthenticated, function(req, res, next){
     req.user.displayName = req.body.displayname;
     req.user.bio = req.body.bio;
     req.user.save()
-        .catch(function(err){
-            if(err) {
-                next(err);
-                return;
-            }
+        .then(function(){
             req.flash("info", "Profile updated!");
             res.redirect("/edit");
+        })
+        .catch(function(err){
+            return next(err);
         });
 });
 
