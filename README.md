@@ -11,7 +11,7 @@ Node and npm required - use npm install to install dependencies
 
 Download source, install with npm, and start mongoDB.  
 
-#Make sure to set mongoDB URI and session secret in config/config.json
+### Make sure to set mongoDB URI and session secret in config/config.json
 
 ```
 npm install
