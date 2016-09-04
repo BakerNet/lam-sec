@@ -1,6 +1,6 @@
 # Project Title
 
-One Paragraph of project description goes here
+Implementation of Learn About Me app from Express in Action - extended for learning purposes.
 
 ### Prerequisities
 
@@ -9,7 +9,9 @@ Node and npm required - use npm install to install dependencies
 
 ### Installing
 
-Download source, install with npm, and start mongoDB.  Make sure to set mongoDB URI in config/config.json
+Download source, install with npm, and start mongoDB.  
+
+#Make sure to set mongoDB URI and session secret in config/config.json
 
 ```
 npm install
