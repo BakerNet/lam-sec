@@ -8,23 +8,41 @@ const flash = require("connect-flash");
 const logger = require("morgan");
 const passport = require("passport");
 const helmet = require("helmet");
+const fsr = require("file-stream-rotator");
+const fs = require("fs");
 
 //grab lam config
 const conf = require("./config/config.json");
 
-//Set routes location
-var routes = require("./routes");
+//Define routes
+var routes = require("./routes/index");
+var login = require("./routes/login");
+var profile = require("./routes/profile");
+
+//Import passport setUpPassport
+var setUpPassport = require("./config/setuppassport");
+
+var logDirectory = path.join(__dirname, 'log');
+// ensure log directory exists
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+
 
 //Create express app
 var app = express();
-
-//Import passport setUpPassport
-var setUpPassport = require("./setuppassport");
 
 //Initialize MongoDB Connection
 var mongoURI = conf.mongoURI;
 mongoose.Promise = global.Promise;
 mongoose.connect(mongoURI);
+
+
+// create a rotating write stream
+var accessLogStream = fsr.getStream({
+  date_format: 'YYYYMMDD',
+  filename: path.join(logDirectory, 'access-%DATE%.log'),
+  frequency: 'daily',
+  verbose: false
+});
 
 setUpPassport();
 
@@ -39,7 +57,7 @@ app.set("view engine", "ejs");
 app.disable("x-powered-by");
 
 //Middleware
-app.use(logger('dev'));
+app.use(logger(('dev'), { stream: accessLogStream }));
 
 //Allow parsing of request body
 app.use(bodyParser.urlencoded({ extended: false}));
@@ -69,7 +87,10 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+//Use defined routes
 app.use(routes);
+app.use(login);
+app.use(profile);
 
 //404 NOT FOUND
 app.use(function(req, res){
@@ -92,10 +113,7 @@ app.use(function(err, req, res){
     res.end("errors occured");
 });
 
-app.listen(app.get("port"), function(){
-    console.log("Server started on port " + app.get("port"));
-});
-
+module.exports = app;
 
 
 

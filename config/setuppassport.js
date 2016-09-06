@@ -2,7 +2,7 @@ const passport = require("passport");
 
 var LocalStrategy = require("passport-local").Strategy;
 
-var User = require("./models/user");
+var User = require("../models/user");
 
 passport.use("login", new LocalStrategy(function(username, password, done){
     User.findOne({ username: username}, function(err, user){

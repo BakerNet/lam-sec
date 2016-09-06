@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node bin/www/index.js"
   },
   "author": "hmb",
   "license": "ISC",
@@ -18,15 +18,15 @@
     "ejs": "^2.5.1",
     "express": "^4.14.0",
     "express-session": "^1.14.1",
+    "file-stream-rotator": "0.0.7",
     "helmet": "^2.1.2",
     "mongoose": "^4.5.10",
     "morgan": "^1.7.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0"
   },
-  "repository" :{ 
-    "type" : "git",
-    "url" : "https://github.com/BakerNet/lam-sec.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BakerNet/lam-sec.git"
   }
 }
-
