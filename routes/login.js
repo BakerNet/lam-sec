@@ -11,14 +11,6 @@ var router = express.Router();
 //User CSRF to prevent cross site form submission
 router.use(csrf());
 
-//Get user/error info from session
-router.use(function(req, res, next){
-    res.locals.currentUser = req.user;
-    res.locals.errors = req.flash("error");
-    res.locals.infos = req.flash("info");
-    next();
-})
-
 //Handle connection to server at base directory
 router.get("/", function(req, res, next){
     User.find()

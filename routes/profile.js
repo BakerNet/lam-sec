@@ -21,15 +21,6 @@ function ensureAuthenticated(req, res, next){
     }
 }
 
-
-//Get user/error info from session
-router.use(function(req, res, next){
-    res.locals.currentUser = req.user;
-    res.locals.errors = req.flash("error");
-    res.locals.infos = req.flash("info");
-    next();
-})
-
 router.get("/users/:username", function(req, res, next){
     User.findOne({ username: req.params.username }).exec()
         .then(function(user){

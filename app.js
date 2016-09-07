@@ -83,8 +83,6 @@ app.use(helmet.ieNoOpen());
 //Security - CSP
 app.use(helmet.contentSecurityPolicy());
 
-
-
 app.use(flash());
 
 app.use(passport.initialize());
