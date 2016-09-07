@@ -10,6 +10,7 @@ const passport = require("passport");
 const helmet = require("helmet");
 const fsr = require("file-stream-rotator");
 const fs = require("fs");
+const favicon = require("serve-favicon");
 
 //grab lam config
 const conf = require("./config/config.json");
@@ -57,8 +58,10 @@ app.set("view engine", "ejs");
 app.disable("x-powered-by");
 
 //Middleware
-app.use(logger(('dev'), { stream: accessLogStream }));
+app.use(logger('dev', { stream: accessLogStream }));
 
+//Serve favicon.ico
+app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 //Allow parsing of request body
 app.use(bodyParser.urlencoded({ extended: false}));
 //Allow parsing of cookies

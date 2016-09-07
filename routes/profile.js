@@ -32,7 +32,7 @@ router.use(function(req, res, next){
 
 router.get("/users/:username", function(req, res, next){
     User.findOne({ username: req.params.username }).exec()
-        .then(function(err, user){
+        .then(function(user){
             if (!user) { return next(404); }
 
             res.render("profile", { user: user });
