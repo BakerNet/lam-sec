@@ -52,6 +52,11 @@ router.post("/edit", ensureAuthenticated, function(req, res, next){
         });
 });
 
+router.get("/chat", ensureAuthenticated, function(req, res, next){
+    res.render("chat", { user: req.user });
+});
+
+
 
 //Export router
 module.exports = router;

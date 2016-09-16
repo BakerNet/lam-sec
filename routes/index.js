@@ -32,5 +32,7 @@ router.get("/", function(req, res, next){
         });
 });
 
+
+
 //Export router
 module.exports = router;

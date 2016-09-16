@@ -22,14 +22,14 @@ passport.use("login", new LocalStrategy(function(username, password, done){
 
 module.exports = function() {
     //Serialize User
-    passport.serializeUser(function(user, done){
+    passport.serializeUser((user, done)=>{
         done(null, user._id);
-    })
+    });
 
     //Deserialize User
-    passport.deserializeUser(function(id, done){
+    passport.deserializeUser((id, done)=>{
         User.findById(id, function(err, user){
             done(err, user);
-        })
-    })
+        });
+    });
 };

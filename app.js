@@ -12,6 +12,7 @@ const fsr = require("file-stream-rotator");
 const fs = require("fs");
 const favicon = require("serve-favicon");
 
+
 //grab lam config
 const conf = require("./config/config.json");
 
@@ -23,13 +24,16 @@ var profile = require("./routes/profile");
 //Import passport setUpPassport
 var setUpPassport = require("./config/setuppassport");
 
+var faviconPath = path.join(__dirname, "public", "favicon.ico");
 var logDirectory = path.join(__dirname, 'log');
 // ensure log directory exists
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
 
-//Create express app
+//Create express app and add websocket
 var app = express();
+var ws = require("express-ws")(app);
+var appWss = ws.getWss();
 
 //Initialize MongoDB Connection
 var mongoURI = conf.mongoURI;
@@ -61,17 +65,19 @@ app.disable("x-powered-by");
 app.use(logger('dev', { stream: accessLogStream }));
 
 //Serve favicon.ico
-app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+app.use(favicon(faviconPath));
 //Allow parsing of request body
 app.use(bodyParser.urlencoded({ extended: false}));
 //Allow parsing of cookies
 app.use(cookieParser());
 //Session cookie manager
-app.use(session({
+var sessionHandler = session({
     secret: conf.secret,
+    rolling: true,
     resave: true,
     saveUninitialized: true
-}));
+})
+app.use(sessionHandler);
 //Security - prevent cross site scripting
 app.use(helmet.xssFilter());
 //Security - prevent iframe of site
@@ -92,6 +98,37 @@ app.use(passport.session());
 app.use(routes);
 app.use(login);
 app.use(profile);
+
+
+app.ws("/", function(ws, req) {
+    var request = ws.upgradeReq;
+    var response = {writeHead: {}}; //What?
+    sessionHandler(request, response, function(err){
+        if(!request.session.passport.user){
+            ws.send("Invalid session");
+            ws.close();
+            return;
+        }
+        console.log("Client connected");
+        
+        ws.on('message', function(msg){
+            appWss.clients.forEach(function(client){
+                client.send("Resent from server: " + msg);
+            });
+        });
+
+        ws.on('close', function(){
+            appWss.clients.forEach(function(client){
+                client.send("User disconnected: " + request.user.name());
+            });
+            console.log("Client disconnected");
+        });
+
+        appWss.clients.forEach(function(client){
+            client.send("User connected: " + request.user.name());
+        });
+    });
+});
 
 //404 NOT FOUND
 app.use(function(req, res){

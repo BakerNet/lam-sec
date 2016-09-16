@@ -1,0 +1,134 @@
+<% include _header %>
+
+<h1> Welcome to chat!</h1>
+
+<div class="container">
+<div class="row " style="padding-top:40px;">
+    <br /><br />
+    <div class="col-md-8">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                RECENT CHAT HISTORY
+            </div>
+            <div class="panel-body">
+                <ul class="media-list" id="messages" style="max-height:400px;overflow:auto;">
+                    
+                    <li class="media">
+
+                        <div class="media-body">
+
+                            <div class="media">
+                                <a class="pull-left" href="#">
+                                    <img class="media-object img-circle " src="" />
+                                </a>
+                                <div class="media-body" >
+                                                    Hi, my name is Hans.  I wrote this chat app.  Welcome!
+                                    <br />
+                                    <small class="text-muted">Hans Baker | 15 Sept 3:39pm</small>
+                                    <hr />
+                                </div>
+                            </div>
+
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="panel-footer">
+                <form class="input-group" id="message-input" >
+                    <input type="text" class="form-control" placeholder="Enter Message" id="message-input-body" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-info" type="submit" id="send-button">SEND</button>
+                    </span>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+               ONLINE USERS
+            </div>
+            <div class="panel-body">
+                <ul class="media-list" id="users">
+
+
+                    <li class="media">
+
+                        <div class="media-body">
+
+                            <div class="media">
+                                <a class="pull-left" href="#">
+                                    <img class="media-object img-circle" style="max-height:40px;" src="" />
+                                </a>
+                                <div class="media-body" >
+                                    <h5>Hans Baker | User </h5>
+                                                    
+                                    <small class="text-muted">Actively not here</small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </li>
+
+
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<template id ="message-template">
+    <li class="media" style="margin-top:0px;">
+        <div class="media-body">
+                <a class="pull-left" href="#">
+                    <img class="media-object img-circle " src="" />
+                </a>
+                <div class="media-body">
+                    <span id='message-body'> </span>
+                    <br />
+                    <small class="text-muted" id="message-user"></small>
+                    <hr />
+                </div>            
+        </div>
+    </li>
+</template>
+
+<script>
+var messages = document.getElementById('messages');
+var users = document.getElementById('users');
+var sendButton = document.getElementById('send-button');
+
+var ws = new WebSocket("ws://localhost:3000");
+ws.onopen = function(event) {
+    ws.send("testing");
+    
+    sendButton.onclick = function(){
+
+        let messageText = document.getElementById('message-input-body').value;
+        ws.send(messageText);
+        document.getElementById('message-input-body').value = "";
+    }
+}
+
+ws.onmessage = function(event){
+    let date = new Date();
+    console.log(event.data);
+    let mtpl = document.getElementById('message-template').content.cloneNode(true);
+    mtpl.getElementById('message-body').innerHTML = event.data;
+    mtpl.getElementById('message-user').innerHTML = "Ya boi Hans | " + date.toString();
+    messages.appendChild(mtpl);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+var forms = document.querySelector("form");
+
+forms.addEventListener("submit", function(event) {
+  event.preventDefault();
+  // actual logic, e.g. validate the form
+});
+
+</script>
+
+<% include _footer %> 
