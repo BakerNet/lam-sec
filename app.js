@@ -1,3 +1,6 @@
+/***********************************
+ * NPM DEPENDENCIES
+ ************************************/
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -12,7 +15,9 @@ const fsr = require("file-stream-rotator");
 const fs = require("fs");
 const favicon = require("serve-favicon");
 
-
+/***********************************
+ * LOCAL DEPENDENCIES
+ ************************************/
 //grab lam config
 const conf = require("./config/config.json");
 
@@ -24,12 +29,15 @@ var profile = require("./routes/profile");
 //Import passport setUpPassport
 var setUpPassport = require("./config/setuppassport");
 
+//Set up path variables
 var faviconPath = path.join(__dirname, "public", "favicon.ico");
 var logDirectory = path.join(__dirname, 'log');
 // ensure log directory exists
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
-
+/***********************************
+ * CONFIGURE SERVER
+ ************************************/
 //Create express app and add websocket
 var app = express();
 var ws = require("express-ws")(app);
@@ -41,7 +49,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect(mongoURI);
 
 
-// create a rotating write stream
+// create a rotating write stream for logs
 var accessLogStream = fsr.getStream({
   date_format: 'YYYYMMDD',
   filename: path.join(logDirectory, 'access-%DATE%.log'),
@@ -49,6 +57,7 @@ var accessLogStream = fsr.getStream({
   verbose: false
 });
 
+//Set up passport authentication protocol
 setUpPassport();
 
 //Set server port
@@ -61,7 +70,14 @@ app.set("view engine", "ejs");
 //Disable made with Express header
 app.disable("x-powered-by");
 
-//Middleware
+//serve static files from public folder and vendor folder
+app.use('/static', express.static('public'));
+app.use('/vendor', express.static('vendor'));
+
+/***********************************
+ * MIDDLEWARE
+ ************************************/
+//Logging middle
 app.use(logger('dev', { stream: accessLogStream }));
 
 //Serve favicon.ico
@@ -75,7 +91,8 @@ var sessionHandler = session({
     secret: conf.secret,
     rolling: true,
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {expires: new Date(Date.now() + (240 * 60 * 1000))}
 })
 app.use(sessionHandler);
 //Security - prevent cross site scripting
@@ -88,21 +105,28 @@ app.use(helmet.noSniff());
 app.use(helmet.ieNoOpen());
 //Security - CSP
 app.use(helmet.contentSecurityPolicy());
-
+//Flash messages - for erros/info
 app.use(flash());
-
+//Passport authentication protocol
 app.use(passport.initialize());
 app.use(passport.session());
 
+/***********************************
+ * ROUTING
+ ************************************/
 //Use defined routes
 app.use(routes);
 app.use(login);
 app.use(profile);
 
-
+/***********************************
+ * WEBSOCKET SERVER - Chatroom
+ *   Chatroom websocket server
+ ************************************/
 app.ws("/", function(ws, req) {
     var request = ws.upgradeReq;
     var response = {writeHead: {}}; //What?
+    //Make sure user is logged in.  Close websocket if not
     sessionHandler(request, response, function(err){
         if(!request.session.passport.user){
             ws.send("Invalid session");
@@ -111,25 +135,55 @@ app.ws("/", function(ws, req) {
         }
         console.log("Client connected");
         
-        ws.on('message', function(msg){
+        //When message received, broadcast that message to all clients
+        ws.on('message', (msg)=>{
+            let resmsg = JSON.stringify({
+                type: "message",
+                message: msg,
+                client: request.user.name()
+            });
             appWss.clients.forEach(function(client){
-                client.send("Resent from server: " + msg);
+                client.send(resmsg);
             });
         });
-
-        ws.on('close', function(){
-            appWss.clients.forEach(function(client){
-                client.send("User disconnected: " + request.user.name());
+        //When user disconnects, let all clients know
+        ws.on('close', ()=>{
+            let resmsg = JSON.stringify({
+                type: "disconnect",
+                message: `User disconnected: ${request.user.name()}`,
+                client: request.user.name()
+            });
+            appWss.clients.forEach((client)=>{
+                client.send(resmsg);
             });
             console.log("Client disconnected");
         });
 
-        appWss.clients.forEach(function(client){
-            client.send("User connected: " + request.user.name());
+        let joinmsg = JSON.stringify({
+            type: "connect",
+            message: `User connected: ${request.user.name()}`,
+            client: request.user.name()
         });
+        //When new user connects, let all clients know
+        //Also - get list of all current clients
+        let clients = [];
+        appWss.clients.forEach((client)=>{
+            client.send(joinmsg);
+            clients.push(client.upgradeReq.user.name());
+        });
+
+        let clientsmsg = JSON.stringify({
+            type: "users",
+            clients: clients
+        })
+        //Send list of all current clients to recently connected user
+        ws.send(clientsmsg)
     });
 });
 
+/***********************************
+ * DEFAULT/ERROR
+ ************************************/
 //404 NOT FOUND
 app.use(function(req, res){
     res.status(404);
@@ -151,6 +205,9 @@ app.use(function(err, req, res){
     res.end("errors occured");
 });
 
+/***********************************
+ * EXPORTS
+ ************************************/
 module.exports = app;
 
 

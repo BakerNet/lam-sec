@@ -1,7 +1,13 @@
+/***********************************
+ * NPM DEPENDENCIES
+ ************************************/
 const express = require("express");
 const passport = require("passport");
 const csrf = require("csurf");
 
+/***********************************
+ * ROUTER CONFIGURATION
+ ************************************/
 //Import user schema
 var User = require("../models/user");
 
@@ -11,7 +17,7 @@ var router = express.Router();
 //User CSRF to prevent cross site form submission
 router.use(csrf());
 
-
+//Makes sure user is logged in before handling request to protected page
 function ensureAuthenticated(req, res, next){
     if(req.isAuthenticated()){
         next();
@@ -21,6 +27,7 @@ function ensureAuthenticated(req, res, next){
     }
 }
 
+//Render user profile
 router.get("/users/:username", function(req, res, next){
     User.findOne({ username: req.params.username }).exec()
         .then(function(user){
@@ -34,11 +41,12 @@ router.get("/users/:username", function(req, res, next){
 });
 
 
-
+//Render profile edit page - must be logged in
 router.get("/edit", ensureAuthenticated, function(req, res){
     res.render("edit", { csrfToken: req.csrfToken() });
 });
 
+//Apply profile edit - must be logged in
 router.post("/edit", ensureAuthenticated, function(req, res, next){
     req.user.displayName = req.body.displayname;
     req.user.bio = req.body.bio;
@@ -52,11 +60,14 @@ router.post("/edit", ensureAuthenticated, function(req, res, next){
         });
 });
 
+//Render chat page - must be logged in
 router.get("/chat", ensureAuthenticated, function(req, res, next){
     res.render("chat", { user: req.user });
 });
 
 
-
+/***********************************
+ * EXPORTS
+ ************************************/
 //Export router
 module.exports = router;

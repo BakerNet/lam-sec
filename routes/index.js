@@ -1,7 +1,13 @@
+/***********************************
+ * NPM DEPENDENCIES
+ ************************************/
 const express = require("express");
 const passport = require("passport");
 const csrf = require("csurf");
 
+/***********************************
+ * ROUTER CONFIGURATION
+ ************************************/
 //Import user schema
 var User = require("../models/user");
 
@@ -33,6 +39,8 @@ router.get("/", function(req, res, next){
 });
 
 
-
+/***********************************
+ * EXPORTS
+ ************************************/
 //Export router
 module.exports = router;
