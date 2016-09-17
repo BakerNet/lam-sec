@@ -39,6 +39,7 @@ ws.onmessage = function(event){
             break;
         case "connect":
             addUser(eventdata.client);
+            connectMessage(eventdata.client);
             break;
         case "disconnect":
             removeUser(eventdata.client);
@@ -93,5 +94,14 @@ function addMessage(message){
     mtpl.getElementById('message-body').innerHTML = message.message;
     mtpl.getElementById('message-user').innerHTML = `${message.client} | ${date.toString()}`;
     messages.appendChild(mtpl);
+    //Scroll down on overflow
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function connectMessage(user){
+    let mtpl = document.getElementById('conn-message-template').content.cloneNode(true);
+    mtpl.getElementById('message-body').innerHTML = `${user} connected`;
+    messages.appendChild(mtpl);
+    //Scroll down on overflow
     messages.scrollTop = messages.scrollHeight;
 }
