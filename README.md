@@ -37,3 +37,11 @@ Then visit http://localhost:3000
 
 * Hat tip to anyone who's code was used
 * Evan Hahn for Express in Action!
+
+## Known Issues
+
+IE and Edge do not support getElementById on objects returned by document.getElementbyId.  Therefore, chat.js does not work in IE or Edge.  It does, however, work in both Chrome and Firefox.
+The way chat room objects are added is using templates, and updating the members of the template with correct content.  This method does not work in Edge.
+
+Errors:
+SCRIPT438: Object doesn't support property or method 'getElementById'
