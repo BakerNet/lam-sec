@@ -41,7 +41,7 @@ fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 //Create express app and add websocket
 var app = express();
 var ws = require("express-ws")(app);
-var appWss = ws.getWss();
+const chatController = require('./controllers/chatroom.js');
 
 //Initialize MongoDB Connection
 var mongoURI = conf.mongoURI;
@@ -119,67 +119,7 @@ app.use(routes);
 app.use(login);
 app.use(profile);
 
-/***********************************
- * WEBSOCKET SERVER - Chatroom
- *   Chatroom websocket server
- ************************************/
-app.ws("/", function(ws, req) {
-    var request = ws.upgradeReq;
-    var response = {writeHead: {}}; //What?
-    //Make sure user is logged in.  Close websocket if not
-    sessionHandler(request, response, function(err){
-        if(!request.session.passport.user){
-            ws.send("Invalid session");
-            ws.close();
-            return;
-        }
-        console.log("Client connected");
-        
-        //When message received, broadcast that message to all clients
-        ws.on('message', (msg)=>{
-            let resmsg = JSON.stringify({
-                type: "message",
-                message: msg,
-                client: request.user.name()
-            });
-            appWss.clients.forEach(function(client){
-                client.send(resmsg);
-            });
-        });
-        //When user disconnects, let all clients know
-        ws.on('close', ()=>{
-            let resmsg = JSON.stringify({
-                type: "disconnect",
-                message: `User disconnected: ${request.user.name()}`,
-                client: request.user.name()
-            });
-            appWss.clients.forEach((client)=>{
-                client.send(resmsg);
-            });
-            console.log("Client disconnected");
-        });
-
-        let joinmsg = JSON.stringify({
-            type: "connect",
-            message: `User connected: ${request.user.name()}`,
-            client: request.user.name()
-        });
-        //When new user connects, let all clients know
-        //Also - get list of all current clients
-        let clients = [];
-        appWss.clients.forEach((client)=>{
-            client.send(joinmsg);
-            clients.push(client.upgradeReq.user.name());
-        });
-
-        let clientsmsg = JSON.stringify({
-            type: "users",
-            clients: clients
-        })
-        //Send list of all current clients to recently connected user
-        ws.send(clientsmsg)
-    });
-});
+chatController(app, sessionHandler);
 
 /***********************************
  * DEFAULT/ERROR

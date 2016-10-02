@@ -13,7 +13,7 @@ var userlist = document.getElementById('user-list');
 var sendButton = document.getElementById('send-button');
 
 //connect to websocket on server
-var ws = new WebSocket("ws://localhost:3000");
+var ws = new WebSocket("ws://localhost:3000/chat");
 ws.onopen = function(event) {
     //ws.send("testing");
     /**********************
@@ -43,6 +43,7 @@ ws.onmessage = function(event){
             break;
         case "disconnect":
             removeUser(eventdata.client);
+            disconnectMessage(eventdata.client);
             break;
         case "users":
             eventdata.clients.forEach(function(client){
@@ -101,6 +102,14 @@ function addMessage(message){
 function connectMessage(user){
     let mtpl = document.getElementById('conn-message-template').content.cloneNode(true);
     mtpl.getElementById('message-body').innerHTML = `${user} connected`;
+    messages.appendChild(mtpl);
+    //Scroll down on overflow
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function disconnectMessage(user){
+    let mtpl = document.getElementById('conn-message-template').content.cloneNode(true);
+    mtpl.getElementById('message-body').innerHTML = `${user} disconnected`;
     messages.appendChild(mtpl);
     //Scroll down on overflow
     messages.scrollTop = messages.scrollHeight;
