@@ -33,7 +33,11 @@ var setUpPassport = require("./config/setuppassport");
 var faviconPath = path.join(__dirname, "public", "favicon.ico");
 var logDirectory = path.join(__dirname, 'log');
 // ensure log directory exists
-fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+try{
+    fs.accessSync(logDirectory)
+}catch(err){
+    fs.mkdirSync(logDirectory)
+}
 
 /***********************************
  * CONFIGURE SERVER
