@@ -15,7 +15,7 @@ module.exports = function(app, sessionHandler){
                 return;
             }
             console.log("Client connected");
-            var index = chatClients.push(ws) - 1;
+            chatClients.push(ws);
             
             
             //When message received, broadcast that message to all clients
@@ -31,6 +31,7 @@ module.exports = function(app, sessionHandler){
             });
             //When user disconnects, let all clients know
             ws.on('close', ()=>{
+                let index = chatClients.indexOf(ws);
                 chatClients.splice(index, 1);
                 let resmsg = JSON.stringify({
                     type: "disconnect",
@@ -41,6 +42,7 @@ module.exports = function(app, sessionHandler){
                     client.send(resmsg);
                 });
                 console.log("Client disconnected");
+                console.log(`Number of clients:  ${chatClients.length}`);
             });
 
             let joinmsg = JSON.stringify({

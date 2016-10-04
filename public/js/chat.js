@@ -73,8 +73,8 @@ function addUser(user){
         //console.log(document.getElementById(`user-${user}`));
         let utpl = document.getElementById('user-template').content.cloneNode(true);
         utpl.querySelector('li').id = `user-${user}`;
-        utpl.getElementById('user-displayname').innerHTML = user;
-        utpl.getElementById('user-status').innerHTML = "online";
+        utpl.querySelector('#user-displayname').innerHTML = user;
+        utpl.querySelector('#user-status').innerHTML = "online";
         userlist.appendChild(utpl);
     }
     
@@ -92,8 +92,8 @@ function removeUser(user){
 function addMessage(message){
     let date = new Date();
     let mtpl = document.getElementById('message-template').content.cloneNode(true);
-    mtpl.getElementById('message-body').innerHTML = message.message;
-    mtpl.getElementById('message-user').innerHTML = `${message.client} | ${date.toString()}`;
+    mtpl.querySelector('#message-body').innerHTML = message.message;
+    mtpl.querySelector('#message-user').innerHTML = `${message.client} | ${date.toString()}`;
     messages.appendChild(mtpl);
     //Scroll down on overflow
     messages.scrollTop = messages.scrollHeight;
@@ -101,7 +101,7 @@ function addMessage(message){
 
 function connectMessage(user){
     let mtpl = document.getElementById('conn-message-template').content.cloneNode(true);
-    mtpl.getElementById('message-body').innerHTML = `${user} connected`;
+    mtpl.querySelector('#message-body').innerHTML = `${user} connected`;
     messages.appendChild(mtpl);
     //Scroll down on overflow
     messages.scrollTop = messages.scrollHeight;
@@ -109,7 +109,7 @@ function connectMessage(user){
 
 function disconnectMessage(user){
     let mtpl = document.getElementById('conn-message-template').content.cloneNode(true);
-    mtpl.getElementById('message-body').innerHTML = `${user} disconnected`;
+    mtpl.querySelector('#message-body').innerHTML = `${user} disconnected`;
     messages.appendChild(mtpl);
     //Scroll down on overflow
     messages.scrollTop = messages.scrollHeight;
