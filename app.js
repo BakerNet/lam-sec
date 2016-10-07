@@ -14,6 +14,7 @@ const helmet = require("helmet");
 const fsr = require("file-stream-rotator");
 const fs = require("fs");
 const favicon = require("serve-favicon");
+const ws = require("express-ws");
 
 /***********************************
  * LOCAL DEPENDENCIES
@@ -25,6 +26,9 @@ const conf = require("./config/config.json");
 var routes = require("./routes/index");
 var login = require("./routes/login");
 var profile = require("./routes/profile");
+
+//Import websocket controllers
+const chatController = require('./controllers/chatroom.js');
 
 //Import passport setUpPassport
 var setUpPassport = require("./config/setuppassport");
@@ -44,8 +48,7 @@ try{
  ************************************/
 //Create express app and add websocket
 var app = express();
-var ws = require("express-ws")(app);
-const chatController = require('./controllers/chatroom.js');
+ws(app);
 
 //Initialize MongoDB Connection
 var mongoURI = conf.mongoURI;

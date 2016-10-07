@@ -14,13 +14,12 @@ var sendButton = document.getElementById('send-button');
 
 //connect to websocket on server
 var ws = new WebSocket("ws://localhost:3000/chat");
-ws.onopen = function(event) {
-    //ws.send("testing");
+ws.onopen = (event) => {
     /**********************
      * If send button clicked, (or enter pressed - see add event listener below),
      *    Send message to server and clear message box
      *********************/   
-    sendButton.onclick = function(){
+    sendButton.onclick = () => {
 
         let messageText = document.getElementById('message-input-body').value;
         ws.send(messageText);
@@ -30,9 +29,8 @@ ws.onopen = function(event) {
 /**********************
  * Process message from server
  *********************/ 
-ws.onmessage = function(event){
+ws.onmessage = (event) => {
     let eventdata = JSON.parse(event.data);
-    //console.log(JSON.stringify(eventdata));
     switch(eventdata.type){
         case "message":
             addMessage(eventdata);
@@ -98,7 +96,9 @@ function addMessage(message){
     //Scroll down on overflow
     messages.scrollTop = messages.scrollHeight;
 }
-
+/**********************
+ * Write user connected to chatbox
+ *********************/ 
 function connectMessage(user){
     let mtpl = document.getElementById('conn-message-template').content.cloneNode(true);
     mtpl.querySelector('#message-body').innerHTML = `${user} connected`;
@@ -106,7 +106,9 @@ function connectMessage(user){
     //Scroll down on overflow
     messages.scrollTop = messages.scrollHeight;
 }
-
+/**********************
+ * Write user disconnected to chatbox
+ *********************/ 
 function disconnectMessage(user){
     let mtpl = document.getElementById('conn-message-template').content.cloneNode(true);
     mtpl.querySelector('#message-body').innerHTML = `${user} disconnected`;
