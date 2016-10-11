@@ -1,4 +1,4 @@
-# Project Title
+# Learn About Me
 
 Implementation of Learn About Me app from Express in Action - extended for learning purposes.
 
