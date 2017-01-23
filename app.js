@@ -15,6 +15,7 @@ const fsr = require("file-stream-rotator");
 const fs = require("fs");
 const favicon = require("serve-favicon");
 const ws = require("express-ws");
+const serveIndex = require("serve-index");
 
 /***********************************
  * LOCAL DEPENDENCIES
@@ -79,7 +80,9 @@ app.disable("x-powered-by");
 
 //serve static files from public folder and vendor folder
 app.use('/static', express.static('public'));
+app.use('/static', serveIndex('public'));
 app.use('/vendor', express.static('vendor'));
+app.use('/vendor', serveIndex('vendor'));
 
 /***********************************
  * MIDDLEWARE
