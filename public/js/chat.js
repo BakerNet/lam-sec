@@ -13,7 +13,7 @@ var userlist = document.getElementById('user-list');
 var sendButton = document.getElementById('send-button');
 
 //connect to websocket on server
-var ws = new WebSocket("ws://localhost:3000/chat");
+var ws = new WebSocket("ws://127.0.0.1/chat");
 ws.onopen = (event) => {
     /**********************
      * If send button clicked, (or enter pressed - see add event listener below),

@@ -14,7 +14,7 @@ module.exports = function(app, sessionHandler){
                 ws.close();
                 return;
             }
-            console.log("Client connected");
+            //console.log("Client connected");
             chatClients.push(ws);
             
             
@@ -41,8 +41,8 @@ module.exports = function(app, sessionHandler){
                 chatClients.forEach((client)=>{
                     client.send(resmsg);
                 });
-                console.log("Client disconnected");
-                console.log(`Number of clients:  ${chatClients.length}`);
+                //console.log("Client disconnected");
+                //console.log(`Number of clients:  ${chatClients.length}`);
             });
 
             let joinmsg = JSON.stringify({

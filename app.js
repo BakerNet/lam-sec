@@ -7,6 +7,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const memcachedStore = require("connect-memjs")(session);
 const flash = require("connect-flash");
 const logger = require("morgan");
 const passport = require("passport");
@@ -14,7 +15,7 @@ const helmet = require("helmet");
 const fsr = require("file-stream-rotator");
 const fs = require("fs");
 const favicon = require("serve-favicon");
-const ws = require("express-ws");
+//const ws = require("express-ws");
 const serveIndex = require("serve-index");
 
 /***********************************
@@ -28,8 +29,8 @@ var routes = require("./routes/index");
 var login = require("./routes/login");
 var profile = require("./routes/profile");
 
-//Import websocket controllers
-const chatController = require('./controllers/chatroom.js');
+//Import websocket controllers - DOES NOT WORK IN GAE
+//const chatController = require('./controllers/chatroom.js');
 
 //Import passport setUpPassport
 var setUpPassport = require("./config/setuppassport");
@@ -47,9 +48,19 @@ try{
 /***********************************
  * CONFIGURE SERVER
  ************************************/
+
+
+// Environment variables are defined in app.yaml.
+let MEMCACHE_URL = process.env.MEMCACHE_URL || '127.0.0.1:11211';
+
+if (process.env.USE_GAE_MEMCACHE) {
+  MEMCACHE_URL = `${process.env.GAE_MEMCACHE_HOST}:${process.env.GAE_MEMCACHE_PORT}`;
+}
+
 //Create express app and add websocket
 var app = express();
-ws(app);
+app.enable('trust proxy');
+//ws(app);
 
 //Initialize MongoDB Connection
 var mongoURI = conf.mongoURI;
@@ -102,7 +113,10 @@ var sessionHandler = session({
     rolling: true,
     resave: true,
     saveUninitialized: true,
-    cookie: {expires: new Date(Date.now() + (240 * 60 * 1000))}
+    cookie: {expires: new Date(Date.now() + (240 * 60 * 1000))},
+    store: new memcachedStore({
+        servers: [ MEMCACHE_URL ]
+    })
 })
 app.use(sessionHandler);
 //Security - prevent cross site scripting
@@ -129,7 +143,7 @@ app.use(routes);
 app.use(login);
 app.use(profile);
 
-chatController(app, sessionHandler);
+//chatController(app, sessionHandler);
 
 /***********************************
  * DEFAULT/ERROR

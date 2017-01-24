@@ -43,3 +43,6 @@ jspm_packages
 
 # Config file with personal info
 config/config.json
+
+#GAE config file
+app.yaml

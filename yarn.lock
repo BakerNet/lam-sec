@@ -76,6 +76,12 @@ connect-flash@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/connect-flash/-/connect-flash-0.1.1.tgz#d8630f26d95a7f851f9956b1e8cc6732f3b6aa30"
 
+connect-memjs:
+  version "0.1.0"
+  resolved "http://registry.npmjs.org/connect-memjs/-/connect-memjs-0.1.0.tgz#05eac7213e672636593183578f64229c11af92e9"
+  dependencies:
+    memjs ">= 0.9.0"
+
 connect@3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/connect/-/connect-3.4.1.tgz#a21361d3f4099ef761cda6dc4a973bb1ebb0a34d"
@@ -369,6 +375,10 @@ lodash@^4.8.0:
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
+
+"memjs@>= 0.9.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/memjs/-/memjs-0.10.0.tgz#5dd549c8c8561aaca7a13e8339f4a7cd88c65efd"
 
 merge-descriptors@1.0.1:
   version "1.0.1"

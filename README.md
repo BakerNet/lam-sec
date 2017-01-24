@@ -11,6 +11,8 @@ Node and npm required - use npm install to install dependencies
 
 Download source, install with npm, and start mongoDB.  
 
+CURRENT VERSION ALSO REQUIRES LOCAL MEMCACHE STORE > see bottom of this page [Node.js GAE Memcache](https://cloud.google.com/appengine/docs/flexible/nodejs/using-redislabs-memcache)
+
 ### Make sure to set mongoDB URI and session secret in config/config.json
 
 ```
@@ -35,9 +37,12 @@ Then visit http://localhost:3000
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
+* Hat tip to anyone who's libraries were used
 * Evan Hahn for Express in Action!
 
 ## Known Issues
 
 Currently not checking for same user entering chat - should probably control this.  Haven't tested effects.
+
+CHAT is commented out on all files because this is deployed to GAE, which does not allow Websocket connections.
+

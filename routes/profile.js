@@ -59,11 +59,12 @@ router.post("/edit", ensureAuthenticated, function(req, res, next){
             return next(err);
         });
 });
-
+/*
 //Render chat page - must be logged in
 router.get("/chat", ensureAuthenticated, function(req, res, next){
     res.render("chat", { user: req.user });
 });
+*/
 
 
 /***********************************
