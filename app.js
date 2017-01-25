@@ -49,6 +49,7 @@ try{
  ************************************/
 //Create express app and add websocket
 var app = express();
+// Re-enabled for GCE
 ws(app);
 
 //Initialize MongoDB Connection
