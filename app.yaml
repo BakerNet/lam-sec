@@ -1,0 +1,16 @@
+# [START app_yaml]
+runtime: nodejs
+env: flex
+
+# [START env_variables]
+env_variables:
+  # If you are using the App Engine Memcache service (currently in alpha),
+  # uncomment this section and comment out the other Memcache variables.
+  #USE_GAE_MEMCACHE: 1
+  MEMCACHE_URL: pub-memcache-11011.us-central1-1-1.gce.garantiadata.com:11011
+  # If you are using a Memcached server with SASL authentiation enabled,
+  # fill in these values with your username and password.
+  MEMCACHE_USERNAME: admin
+  MEMCACHE_PASSWORD: yolo$420
+# [END env_variables]
+# [END app_yaml]
