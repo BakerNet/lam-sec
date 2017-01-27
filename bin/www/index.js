@@ -4,8 +4,8 @@ var fs = require('fs');
 var config = require("../../config/config.json");
 
 var options = {
-    key: fs.readFileSync(sslPath + 'privkey.pem'),
-    cert: fs.readFileSync(sslPath + 'fullchain.pem')
+    key: fs.readFileSync(config.sslPath + 'privkey.pem'),
+    cert: fs.readFileSync(config.sslPath + 'fullchain.pem')
 }
 
 app.listen(app.get("port"), function(){
