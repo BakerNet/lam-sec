@@ -3,7 +3,7 @@
  ************************************/
 const express = require("express");
 const passport = require("passport");
-const csrf = require("csurf");
+//const csrf = require("csurf");
 
 /***********************************
  * ROUTER CONFIGURATION
@@ -15,7 +15,7 @@ var User = require("../models/user");
 var router = express.Router();
 
 //User CSRF to prevent cross site form submission
-router.use(csrf());
+//router.use(csrf());
 
 //Get user/error info from session
 router.use(function(req, res, next){

@@ -70,7 +70,8 @@ var accessLogStream = fsr.getStream({
 setUpPassport();
 
 //Set server port
-app.set("port", process.env.PORT || 3000);
+//app.set("port", process.env.PORT || 3000);
+app.set("port", 80);
 
 //Set views path and views engine
 app.set("views", path.join(__dirname, "views"));
