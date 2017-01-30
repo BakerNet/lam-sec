@@ -52,8 +52,8 @@ try{
 var app = express();
 //Config for https
 var options = {
-    key: fs.readFileSync(config.sslPath + 'privkey.pem'),
-    cert: fs.readFileSync(config.sslPath + 'fullchain.pem')
+    key: fs.readFileSync(conf.sslPath + 'privkey.pem'),
+    cert: fs.readFileSync(conf.sslPath + 'fullchain.pem')
 }
 // Creat https server
 var httpsServer = https.createServer(options, app);
