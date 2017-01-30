@@ -13,7 +13,11 @@ var userlist = document.getElementById('user-list');
 var sendButton = document.getElementById('send-button');
 
 //connect to websocket on server
-var ws = new WebSocket("ws://lam.hansbaker.com/chat");
+if (window.location.protocol != "https:"){
+    var ws = new WebSocket("ws://lam.hansbaker.com/chat");
+}else{
+    var ws = new WebSocket("wss://lam.hansbaker.com/chat");
+}
 
 ws.onopen = (event) => {
     /**********************
