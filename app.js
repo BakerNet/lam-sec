@@ -16,6 +16,7 @@ const fs = require("fs");
 const favicon = require("serve-favicon");
 const ws = require("express-ws");
 const serveIndex = require("serve-index");
+const https = require("https");
 
 /***********************************
  * LOCAL DEPENDENCIES
@@ -47,10 +48,17 @@ try{
 /***********************************
  * CONFIGURE SERVER
  ************************************/
-//Create express app and add websocket
+//Create express app
 var app = express();
+//Config for https
+var options = {
+    key: fs.readFileSync(config.sslPath + 'privkey.pem'),
+    cert: fs.readFileSync(config.sslPath + 'fullchain.pem')
+}
+// Creat https server
+var httpsServer = https.createServer(options, app);
 // Re-enabled for GCE
-ws(app);
+ws(app, httpsServer);
 
 //Initialize MongoDB Connection
 var mongoURI = conf.mongoURI;
@@ -160,7 +168,10 @@ app.use(function(err, req, res){
 /***********************************
  * EXPORTS
  ************************************/
-module.exports = app;
+module.exports = {
+    app: app,
+    httpsServer: httpsServer
+}
 
 
 
