@@ -121,7 +121,7 @@ var sessionHandler = session({
     rolling: true,
     resave: true,
     saveUninitialized: true,
-    cookie: {expires: new Date(Date.now() + (240 * 60 * 1000))}
+    cookie: {maxAge: (240 * 60 * 1000)}
 })
 app.use(sessionHandler);
 //Security - prevent cross site scripting
