@@ -3,7 +3,7 @@
  ************************************/
 const express = require("express");
 const passport = require("passport");
-//const csrf = require("csurf");
+const csrf = require("csurf");
 
 /***********************************
  * ROUTER CONFIGURATION
@@ -15,7 +15,7 @@ var User = require("../models/user");
 var router = express.Router();
 
 //User CSRF to prevent cross site form submission
-//router.use(csrf());
+router.use(csrf());
 
 //Makes sure user is logged in before handling request to protected page
 function ensureAuthenticated(req, res, next){
@@ -43,7 +43,7 @@ router.get("/users/:username", function(req, res, next){
 
 //Render profile edit page - must be logged in
 router.get("/edit", ensureAuthenticated, function(req, res){
-    res.render("edit", { /* csrfToken: req.csrfToken() */ });
+    res.render("edit", { csrfToken: req.csrfToken() });
 });
 
 //Apply profile edit - must be logged in

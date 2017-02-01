@@ -3,7 +3,7 @@
  ************************************/
 const express = require("express");
 const passport = require("passport");
-//const csrf = require("csurf");
+const csrf = require("csurf");
 
 /***********************************
  * ROUTER CONFIGURATION
@@ -15,11 +15,11 @@ var User = require("../models/user");
 var router = express.Router();
 
 //User CSRF to prevent cross site form submission
-//router.use(csrf());
+router.use(csrf());
 
 //Render signup page on signup GET request
 router.get("/signup", function(req, res){
-    res.render("signup", { /* csrfToken: req.csrfToken() */ });
+    res.render("signup", { csrfToken: req.csrfToken() });
 });
 
 //Create user if not exists on signup POST request
@@ -52,7 +52,7 @@ router.post("/signup", function(req, res, next){
 
 //Render login page on login GET request
 router.get("/login", function(req, res){
-    res.render("login", { /* csrfToken: req.csrfToken() */ });
+    res.render("login", { csrfToken: req.csrfToken() });
 });
 
 //Authenticate and log in user on login POST request
