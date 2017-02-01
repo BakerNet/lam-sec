@@ -1,4 +1,7 @@
 {
     "mongoURI": "",
-    "secret": ""
+    "secret": "",
+    "redisHost": "",
+    "redisPort": "",
+    "sslPath": ""
 }
